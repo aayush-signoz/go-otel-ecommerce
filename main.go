@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"go-otel-ecommerce/config"
@@ -32,7 +32,7 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Recovery())
-	r.Use(otelgin.Middleware(config.ServiceName)) // ✅ use otelgin directly
+	r.Use(otelgin.Middleware(config.ServiceName))
 	r.Use(middleware.MetricsMiddleware)
 
 	r.GET("/products", handlers.ListProducts)
@@ -41,7 +41,7 @@ func main() {
 	r.GET("/cpuTest", handlers.CpuLoadTest)
 	r.GET("/concurrencyTest", handlers.ConcurrencyTest)
 
-	logrus.WithField("service", config.ServiceName).Info("🚀 Starting server on :8080")
+	logrus.WithField("service", config.ServiceName).Info(" Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
