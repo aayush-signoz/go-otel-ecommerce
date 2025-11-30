@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -14,18 +13,9 @@ import (
 	"go-otel-ecommerce/handlers"
 	"go-otel-ecommerce/middleware"
 	"go-otel-ecommerce/redis"
-	"go-otel-ecommerce/telemetry"
 )
 
 func main() {
-	tracerShutdown := telemetry.InitTracer()
-	defer tracerShutdown(context.Background())
-
-	loggerShutdown := telemetry.InitLogger()
-	defer loggerShutdown(context.Background())
-
-	meterShutdown := telemetry.InitMeter()
-	defer meterShutdown(context.Background())
 
 	db.SetupDB()
 	redis.SetupRedis(config.RedisAddr)
@@ -41,7 +31,7 @@ func main() {
 	r.GET("/cpuTest", handlers.CpuLoadTest)
 	r.GET("/concurrencyTest", handlers.ConcurrencyTest)
 
-	logrus.WithField("service", config.ServiceName).Info(" Starting server on :8080")
+	logrus.WithField("service", config.ServiceName).Info("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
