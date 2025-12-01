@@ -3,7 +3,6 @@ package telemetry
 import (
 	"context"
 	"os"
-	"runtime"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -119,23 +118,15 @@ func InitMeter() func(context.Context) error {
 	otel.SetMeterProvider(meterProvider)
 
 	meter := meterProvider.Meter(config.ServiceName)
+
 	OrdersTotal, _ = meter.Int64Counter("orders_total")
 	ProductOrderCounter, _ = meter.Int64Counter("product_order_total")
 	HttpRequestCount, _ = meter.Int64Counter("http_request_count")
 	HttpDurationBucket, _ = meter.Float64Histogram("http_request_duration")
-	GoroutinesGauge, _ = meter.Int64ObservableGauge("go_goroutines")
-	MemoryGauge, _ = meter.Int64ObservableGauge("go_memory_bytes")
-
-	meter.RegisterCallback(func(ctx context.Context, o metric.Observer) error {
-		var memStats runtime.MemStats
-		runtime.ReadMemStats(&memStats)
-		o.ObserveInt64(MemoryGauge, int64(memStats.Alloc))
-		o.ObserveInt64(GoroutinesGauge, int64(runtime.NumGoroutine()))
-		return nil
-	}, MemoryGauge, GoroutinesGauge)
 
 	otelruntime.Start(
 		otelruntime.WithMeterProvider(meterProvider),
+		otelruntime.WithMinimumReadMemStatsInterval(time.Second),
 	)
 
 	return meterProvider.Shutdown

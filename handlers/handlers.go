@@ -76,11 +76,13 @@ func CreateOrderHandler(c *gin.Context) {
 	}
 
 	redis.SetLastOrder(ctx, productID, req.Quantity)
+	telemetry.OrdersTotal.Add(ctx, 1)
 
-	telemetry.OrdersTotal.Add(ctx, int64(req.Quantity))
-	telemetry.ProductOrderCounter.Add(ctx, int64(req.Quantity),
-		metric.WithAttributes(attribute.String("product", req.ProductName)),
-	)
+	for i := 0; i < req.Quantity; i++ {
+		telemetry.ProductOrderCounter.Add(ctx, 1,
+			metric.WithAttributes(attribute.String("product", req.ProductName)),
+		)
+	}
 
 	span.SetAttributes(
 		attribute.String("product.name", req.ProductName),
