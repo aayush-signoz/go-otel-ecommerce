@@ -80,7 +80,7 @@ cd ecommerce-go
 go mod tidy
 ```
 
-### Running with Docker
+### Redis with Docker
 This project includes a `docker-compose.yml` file to start Redis locally:
 
 1. **Start Redis using Docker Compose:**
