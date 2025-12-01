@@ -134,6 +134,9 @@ func InitMeter() func(context.Context) error {
 		return nil
 	}, MemoryGauge, GoroutinesGauge)
 
-	otelruntime.Start()
+	otelruntime.Start(
+		otelruntime.WithMeterProvider(meterProvider),
+	)
+
 	return meterProvider.Shutdown
 }
