@@ -99,7 +99,7 @@ docker ps
 
 | Variable | Description |
 |----------|-------------|
-| `SERVICE_NAME` | Name of the service for tracing, logging, and metrics |
+| `OTEL_SERVICE_NAME` | Name of the service for tracing, logging, and metrics |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint |
 | `INSECURE_MODE` | `true` to skip TLS for OTLP, `false` for secure connection |
 | `REDIS_ADDR` | Redis server address (host:port) |
@@ -110,7 +110,7 @@ docker ps
 ## Running the Application
 
 ```bash
-SERVICE_NAME=goApp \
+OTEL_SERVICE_NAME=goApp \
 INSECURE_MODE=false \
 REDIS_ADDR=127.0.0.1:6379 \
 OTEL_EXPORTER_OTLP_HEADERS="signoz-ingestion-key=<INSERT_INGESTION_KEY_HERE>" \
